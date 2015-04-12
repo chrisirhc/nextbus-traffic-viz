@@ -2,11 +2,23 @@
 /* jshint browser: true, unused: true, undef: true */
 (function () { 'use strict';
 
-  var svg = d3.select('#cv');
+  var width = Math.max(500, window.innerWidth);
+  var height = Math.max(500, window.innerHeight);
+
+  var svg = d3.select('#cv')
+    .attr('width', width)
+    .attr('height', height)
+    ;
+  var outerG = svg.append('g');
 
   var projection = d3.geo.mercator()
-          .center([-122.43, 37.72]).scale(142000)
-          .translate([500 / 2, 500 / 2]);
+          .center([-122.44, 37.755]).scale(202000)
+          .translate([width / 2, height / 2]);
+
+  var zoom = d3.behavior.zoom()
+    .on('zoom', zoomed);
+
+  svg.call(zoom);
 
   var speedScale = d3.scale.linear()
     .domain([0, 50])
@@ -16,13 +28,16 @@
   getVehicles();
   setInterval(getVehicles, 10000);
 
-  var overlayCanvas = document.querySelector('#overlay');
-  var overlayCtx = overlayCanvas.getContext('2d');
+  var overlayCanvas = d3.select('#overlay')
+    .attr('width', width)
+    .attr('height', height)
+    ;
+  var overlayCtx = overlayCanvas[0][0].getContext('2d');
 
   function drawVehicles(vehicles) {
-    var vehiclesG = svg.select('.vehicles');
+    var vehiclesG = outerG.select('.vehicles');
     if (vehiclesG.empty()) {
-      vehiclesG = svg.append('g').attr('class', 'vehicles');
+      vehiclesG = outerG.append('g').attr('class', 'vehicles');
     }
 
     var updateVehicles = vehiclesG.selectAll('.vehicle')
@@ -72,7 +87,7 @@
   function getStreets() {
     var url = 'streets.json';
     d3.json(url, function (error, jsonResult) {
-      svg.append('path')
+      outerG.append('path')
         .style('stroke', 'rgba(0,0,0,0.1)')
         .datum(jsonResult)
         .attr('d', d3.geo.path().projection(
@@ -89,6 +104,24 @@
       overlayCtx.lineTo(to[0], to[1]);
       overlayCtx.stroke();
     }
+  }
+
+  function zoomed() {
+    var transformStr = 'translate(' + zoom.translate() + ')scale(' +
+        zoom.scale() + ',' + zoom.scale() + ')';
+    outerG.attr('transform', transformStr);
+
+    var transformDecomp = d3.transform(transformStr);
+    var translateStr = 'translate(' +
+      transformDecomp.translate[0] + 'px, ' +
+      transformDecomp.translate[1] + 'px)';
+    var scaleStr = 'scale(' + transformDecomp.scale + ')';
+    var cssTransformStr = translateStr + ' ' + scaleStr;
+
+    overlayCanvas
+      .style('transform', cssTransformStr)
+      .style('transform-origin', '0 0')
+      ;
   }
 
 })();

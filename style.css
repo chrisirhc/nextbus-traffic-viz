@@ -5,6 +5,10 @@
   top: 0;
 }
 
+#overlay {
+  pointer-events: none;
+}
+
 .vehicle {
   fill: rgba(0, 0, 128, 0.2);
 }
