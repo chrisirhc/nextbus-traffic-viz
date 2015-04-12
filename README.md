@@ -1,0 +1,4 @@
+- Draw vehicles
+- Draw map ( or use GMaps )
+- Add canvas on top
+- Paint speed on map
