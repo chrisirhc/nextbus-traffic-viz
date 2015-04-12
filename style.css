@@ -1,3 +1,10 @@
+#overlay,
+#cv
+ {
+  position: absolute;
+  top: 0;
+}
+
 .vehicle {
-  fill: green;
+  fill: rgba(0, 128, 0, 0.2);
 }

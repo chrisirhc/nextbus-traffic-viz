@@ -12,6 +12,9 @@
   getVehicles();
   setInterval(getVehicles, 10000);
 
+  var overlayCanvas = document.querySelector('#overlay');
+  var overlayCtx = overlayCanvas.getContext('2d');
+
   function drawVehicles(vehicles) {
     var vehiclesG = svg.select('.vehicles');
     if (vehiclesG.empty()) {
@@ -30,16 +33,21 @@
     updateVehicles.each(function (v) {
       var dThis = d3.select(this);
       var xy = projection([v.lon, v.lat]);
+
+      var beforeXy = [dThis.attr('cx'), dThis.attr('cy')];
+
       dThis
         .attr('cx', xy[0])
         .attr('cy', xy[1]);
+
+      paint(beforeXy, xy, 10);
     });
 
     updateVehicles.exit().remove();
   }
 
   function getVehicles() {
-    var url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=sf-muni&r=N&t=';
+    var url = 'http://webservices.nextbus.com/service/publicXMLFeed?command=vehicleLocations&a=sf-muni&t=';
     d3.xml(url + '0', function (xmlResult) {
       var xml = d3.select(xmlResult);
       var dVehicles = xml.selectAll('vehicle');
@@ -60,12 +68,22 @@
     var url = 'streets.json';
     d3.json(url, function (error, jsonResult) {
       svg.append('path')
-        .style('stroke', 'black')
+        .style('stroke', 'rgba(0,0,0,0.1)')
         .datum(jsonResult)
         .attr('d', d3.geo.path().projection(
           projection
         ));
     });
+  }
+
+  function paint(from, to, speed) {
+    if (from[0]) {
+      overlayCtx.beginPath();
+      overlayCtx.strokeStyle = 'blue';
+      overlayCtx.moveTo(from[0], from[1]);
+      overlayCtx.lineTo(to[0], to[1]);
+      overlayCtx.stroke();
+    }
   }
 
 })();
