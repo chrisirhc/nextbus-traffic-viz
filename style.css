@@ -1,3 +1,7 @@
+body {
+  background: #f8f8f8;
+}
+
 #overlay,
 #cv
  {
@@ -11,4 +15,9 @@
 
 .vehicle {
   fill: rgba(0, 0, 128, 0.2);
+}
+
+.streets {
+  /*stroke: rgba(0,0,0,0.1)*/
+  fill: rgba(0,0,0,0.1)
 }

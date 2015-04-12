@@ -88,7 +88,7 @@
     var url = 'streets.json';
     d3.json(url, function (error, jsonResult) {
       outerG.append('path')
-        .style('stroke', 'rgba(0,0,0,0.1)')
+        .attr('class', 'streets')
         .datum(jsonResult)
         .attr('d', d3.geo.path().projection(
           projection
