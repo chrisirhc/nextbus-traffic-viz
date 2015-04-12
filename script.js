@@ -8,6 +8,10 @@
           .center([-122.43, 37.72]).scale(142000)
           .translate([500 / 2, 500 / 2]);
 
+  var speedScale = d3.scale.linear()
+    .domain([0, 50])
+    .range(['red', 'green']);
+
   getStreets();
   getVehicles();
   setInterval(getVehicles, 10000);
@@ -40,7 +44,7 @@
         .attr('cx', xy[0])
         .attr('cy', xy[1]);
 
-      paint(beforeXy, xy, 10);
+      paint(beforeXy, xy, v.speed);
     });
 
     updateVehicles.exit().remove();
@@ -57,6 +61,7 @@
           id: d.attr('id'),
           lon: d.attr('lon'),
           lat: d.attr('lat'),
+          speed: d.attr('speedKmHr'),
         };
       });
 
@@ -79,7 +84,7 @@
   function paint(from, to, speed) {
     if (from[0]) {
       overlayCtx.beginPath();
-      overlayCtx.strokeStyle = 'blue';
+      overlayCtx.strokeStyle = speedScale(speed);
       overlayCtx.moveTo(from[0], from[1]);
       overlayCtx.lineTo(to[0], to[1]);
       overlayCtx.stroke();
