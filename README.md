@@ -1,4 +1,5 @@
-- Draw vehicles
-- Draw map ( or use GMaps )
-- Add canvas on top
-- Paint speed on map
+# NextBus Traffic Visualization
+
+Visualize a sort of heatmap of traffic over bus routes by coloring the buses' speeds over routes.
+
+It's an experiment.
